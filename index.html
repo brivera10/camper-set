@@ -145,12 +145,48 @@
   }
   .yt iframe { width: 100%; height: 100%; border: 0; display: block; }
 
+  /* tap-to-enter screen: the tap is what lets the browser play sound */
+  .enter {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    background: var(--black);
+    color: var(--cream);
+    border: 0;
+    font: inherit;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+    padding: 24px;
+    transition: opacity 0.6s ease;
+  }
+  .enter .stripe { width: 120px; margin: 0; }
+  .enter-title {
+    font-weight: 900;
+    font-stretch: 62%;
+    font-size: clamp(44px, 12vw, 72px);
+    line-height: 0.9;
+    text-transform: lowercase;
+  }
+  .enter-cta { font-stretch: 125%; font-weight: 300; font-size: 18px; color: var(--sky); }
+  body.entered .enter { opacity: 0; pointer-events: none; }
+  body:not(.entered) .photo { animation-play-state: paused; }
+
   @media (prefers-reduced-motion: reduce) {
+    .enter { transition: none; }
     .photo { animation: none; opacity: 1; }
   }
 </style>
 </head>
 <body>
+<button class="enter" id="enter" type="button">
+  <span class="enter-title">House set behind the camper</span>
+  <span class="stripe" aria-hidden="true"></span>
+  <span class="enter-cta">Tap to enter</span>
+</button>
 <main>
   <img class="photo" src="camper.jpg" width="825" height="1018"
        alt="An old cream camper van with a brown stripe parked beside a cinder-block garage on a foggy morning">
@@ -202,12 +238,12 @@
   window.onYouTubeIframeAPIReady = function () {
     player = new YT.Player('yt-player', {
       videoId: VIDEO_ID,
-      playerVars: { autoplay: 1, loop: 1, playlist: VIDEO_ID, playsinline: 1, rel: 0 },
+      playerVars: { autoplay: 1, mute: 1, loop: 1, playlist: VIDEO_ID, playsinline: 1, rel: 0 },
       events: {
         onReady: (e) => {
           btn.hidden = false;
-          e.target.playVideo(); // browsers may block this until the visitor taps
-          ['pointerdown', 'keydown'].forEach(t => document.addEventListener(t, startOnFirstTouch));
+          e.target.playVideo(); // starts muted behind the enter screen
+          if (entered) startSound();
         },
         onStateChange: (e) => {
           isPlaying = e.data === YT.PlayerState.PLAYING;
@@ -218,16 +254,23 @@
     });
   };
 
-  // If autoplay was blocked, start the song on the visitor's first tap, click or key press
-  function startOnFirstTouch(e) {
-    ['pointerdown', 'keydown'].forEach(t => document.removeEventListener(t, startOnFirstTouch));
-    if (e.target.closest && e.target.closest('#play')) return;
-    if (!isPlaying && player) player.playVideo();
+  // The visitor's tap on "Tap to enter" is what unlocks sound in the browser
+  let entered = false;
+  function startSound() {
+    if (!player || !player.unMute) return;
+    player.unMute();
+    player.setVolume(100);
+    player.playVideo();
   }
+  document.getElementById('enter').addEventListener('click', () => {
+    entered = true;
+    document.body.classList.add('entered');
+    startSound();
+  });
 
   btn.addEventListener('click', () => {
     if (!player) return;
-    isPlaying ? player.pauseVideo() : player.playVideo();
+    if (isPlaying) { player.pauseVideo(); } else { player.unMute(); player.playVideo(); }
   });
 </script>
 </body>
