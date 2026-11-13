@@ -134,6 +134,17 @@
   button.play[hidden] { display: none; }
   .icon { width: 12px; height: 12px; }
 
+  /* small visible player; YouTube's terms require the player to stay visible */
+  .yt {
+    margin-top: 20px;
+    width: min(100%, 356px);
+    aspect-ratio: 16 / 9;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #1a1914;
+  }
+  .yt iframe { width: 100%; height: 100%; border: 0; display: block; }
+
   @media (prefers-reduced-motion: reduce) {
     .photo { animation: none; opacity: 1; }
   }
@@ -163,25 +174,61 @@
       <span id="label">Play</span>
     </button>
   </div>
-
-  <!-- Drop an audio file named pull-up.mp3 next to this file and the play button shows up automatically -->
-  <audio id="song" src="pull-up.mp3" preload="metadata" loop></audio>
+  <div class="yt"><div id="yt-player"></div></div>
 </main>
 
 <script>
-  const song = document.getElementById('song');
+  // ▼ Paste the YouTube link for the song between the quotes
+  const YOUTUBE_LINK = 'https://www.youtube.com/watch?v=J_eDFO5OGW8';
+
+  // Pulls the video ID out of any normal YouTube link (watch?v=, youtu.be/, shorts/, music.youtube)
+  function getId(link) {
+    const m = link.match(/(?:v=|youtu\.be\/|shorts\/|embed\/)([\w-]{11})/);
+    return m ? m[1] : link.trim();
+  }
+  const VIDEO_ID = getId(YOUTUBE_LINK);
+
   const btn = document.getElementById('play');
   const label = document.getElementById('label');
   const icon = document.getElementById('icon');
   const PLAY = 'M2 1l9 5-9 5z';
   const PAUSE = 'M2 1h3v10H2zM7 1h3v10H7z';
+  let player, isPlaying = false;
 
-  song.addEventListener('loadedmetadata', () => { btn.hidden = false; });
+  const tag = document.createElement('script');
+  tag.src = 'https://www.youtube.com/iframe_api';
+  document.head.appendChild(tag);
+
+  window.onYouTubeIframeAPIReady = function () {
+    player = new YT.Player('yt-player', {
+      videoId: VIDEO_ID,
+      playerVars: { autoplay: 1, loop: 1, playlist: VIDEO_ID, playsinline: 1, rel: 0 },
+      events: {
+        onReady: (e) => {
+          btn.hidden = false;
+          e.target.playVideo(); // browsers may block this until the visitor taps
+          ['pointerdown', 'keydown'].forEach(t => document.addEventListener(t, startOnFirstTouch));
+        },
+        onStateChange: (e) => {
+          isPlaying = e.data === YT.PlayerState.PLAYING;
+          label.textContent = isPlaying ? 'Pause' : 'Play';
+          icon.setAttribute('d', isPlaying ? PAUSE : PLAY);
+        }
+      }
+    });
+  };
+
+  // If autoplay was blocked, start the song on the visitor's first tap, click or key press
+  function startOnFirstTouch(e) {
+    ['pointerdown', 'keydown'].forEach(t => document.removeEventListener(t, startOnFirstTouch));
+    if (e.target.closest && e.target.closest('#play')) return;
+    if (!isPlaying && player) player.playVideo();
+  }
+
   btn.addEventListener('click', () => {
-    if (song.paused) { song.play(); } else { song.pause(); }
+    if (!player) return;
+    isPlaying ? player.pauseVideo() : player.playVideo();
   });
-  song.addEventListener('play', () => { label.textContent = 'Pause'; icon.setAttribute('d', PAUSE); });
-  song.addEventListener('pause', () => { label.textContent = 'Play'; icon.setAttribute('d', PLAY); });
 </script>
 </body>
 </html>
