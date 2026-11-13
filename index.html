@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>House set behind the camper — Nov 14</title>
+<meta name="description" content="House set behind the camper. November 14, 10 pm to 12:30 am.">
+<meta property="og:title" content="House set behind the camper">
+<meta property="og:description" content="November 14, 10 pm to 12:30 am">
+<meta property="og:image" content="camper.jpg">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚐</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #000;
+    --cream: #ede6c8;
+    --sky: #b9d4cb;
+    --stripe: #7a3b2a;
+    --stripe-light: #a85a3c;
+    --dim: #8f8a76;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--black); color: var(--cream); }
+  body {
+    font-family: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    font-stretch: 100%;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    padding: env(safe-area-inset-top, 0) 0 env(safe-area-inset-bottom, 0);
+  }
+
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: clamp(20px, 5vw, 48px) clamp(20px, 5vw, 40px) 64px;
+  }
+
+  .photo {
+    display: block;
+    width: 100%;
+    height: auto;
+    opacity: 0;
+    animation: develop 2.4s ease-out 0.1s forwards;
+  }
+  @keyframes develop {
+    from { opacity: 0; filter: brightness(1.8) saturate(0.2) blur(2px); }
+    to   { opacity: 1; filter: none; }
+  }
+
+  h1 {
+    margin-top: clamp(-72px, -10vw, -40px);
+    position: relative;
+    font-weight: 900;
+    font-stretch: 62%;
+    font-size: clamp(64px, 17vw, 132px);
+    line-height: 0.86;
+    letter-spacing: -0.01em;
+    text-transform: lowercase;
+    color: var(--cream);
+    text-shadow: 0 2px 24px rgba(0,0,0,0.5);
+  }
+
+  /* the van's double stripe */
+  .stripe {
+    margin: 32px 0 28px;
+    height: 14px;
+    background:
+      linear-gradient(var(--stripe), var(--stripe)) top / 100% 7px no-repeat,
+      linear-gradient(var(--stripe-light), var(--stripe-light)) bottom / 100% 3px no-repeat;
+  }
+
+  .when {
+    font-stretch: 125%;
+    font-weight: 700;
+    font-size: clamp(22px, 5vw, 30px);
+    line-height: 1.2;
+  }
+  .time {
+    font-stretch: 125%;
+    font-weight: 300;
+    font-size: clamp(22px, 5vw, 30px);
+    line-height: 1.2;
+    color: var(--sky);
+  }
+
+  .where {
+    margin-top: 28px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px 20px;
+  }
+  .coords {
+    font-weight: 400;
+    font-size: 17px;
+    color: var(--dim);
+    font-variant-numeric: tabular-nums;
+  }
+
+  a.map, button.play {
+    font: inherit;
+    font-weight: 700;
+    font-size: 17px;
+    color: var(--black);
+    background: var(--cream);
+    border: 0;
+    border-radius: 999px;
+    padding: 10px 20px;
+    text-decoration: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  a.map:hover, button.play:hover { background: var(--sky); }
+  a:focus-visible, button:focus-visible { outline: 3px solid var(--sky); outline-offset: 3px; }
+
+  .track {
+    margin-top: 48px;
+    padding-top: 20px;
+    border-top: 1px solid #2a2820;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .track p { font-size: 17px; color: var(--dim); }
+  .track strong { color: var(--cream); font-weight: 700; }
+  button.play { background: transparent; color: var(--cream); box-shadow: inset 0 0 0 2px var(--cream); }
+  button.play:hover { background: var(--cream); color: var(--black); }
+  button.play[hidden] { display: none; }
+  .icon { width: 12px; height: 12px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .photo { animation: none; opacity: 1; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <img class="photo" src="camper.jpg" width="825" height="1018"
+       alt="An old cream camper van with a brown stripe parked beside a cinder-block garage on a foggy morning">
+
+  <h1>House set behind the camper</h1>
+
+  <div class="stripe" aria-hidden="true"></div>
+
+  <p class="when">Saturday, November 14</p>
+  <p class="time">10 pm – 12:30 am</p>
+
+  <div class="where">
+    <span class="coords">41.23664° N, 95.94203° W</span>
+    <a class="map" href="https://maps.google.com/?q=41.23664,-95.94203" target="_blank" rel="noopener">Open in Maps</a>
+  </div>
+
+  <div class="track">
+    <p>Soundtrack: <strong>Pull Up</strong> by Funk Cartel</p>
+    <button class="play" id="play" hidden>
+      <svg class="icon" viewBox="0 0 12 12" aria-hidden="true"><path id="icon" d="M2 1l9 5-9 5z" fill="currentColor"/></svg>
+      <span id="label">Play</span>
+    </button>
+  </div>
+
+  <!-- Drop an audio file named pull-up.mp3 next to this file and the play button shows up automatically -->
+  <audio id="song" src="pull-up.mp3" preload="metadata" loop></audio>
+</main>
+
+<script>
+  const song = document.getElementById('song');
+  const btn = document.getElementById('play');
+  const label = document.getElementById('label');
+  const icon = document.getElementById('icon');
+  const PLAY = 'M2 1l9 5-9 5z';
+  const PAUSE = 'M2 1h3v10H2zM7 1h3v10H7z';
+
+  song.addEventListener('loadedmetadata', () => { btn.hidden = false; });
+  btn.addEventListener('click', () => {
+    if (song.paused) { song.play(); } else { song.pause(); }
+  });
+  song.addEventListener('play', () => { label.textContent = 'Pause'; icon.setAttribute('d', PAUSE); });
+  song.addEventListener('pause', () => { label.textContent = 'Play'; icon.setAttribute('d', PLAY); });
+</script>
+</body>
+</html>
