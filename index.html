@@ -99,7 +99,7 @@
     font-variant-numeric: tabular-nums;
   }
 
-  a.map, button.play {
+  a.map {
     font: inherit;
     font-weight: 700;
     font-size: 17px;
@@ -114,7 +114,7 @@
     align-items: center;
     gap: 10px;
   }
-  a.map:hover, button.play:hover { background: var(--sky); }
+  a.map:hover { background: var(--sky); }
   a:focus-visible, button:focus-visible { outline: 3px solid var(--sky); outline-offset: 3px; }
 
   .track {
@@ -129,64 +129,13 @@
   }
   .track p { font-size: 17px; color: var(--dim); }
   .track strong { color: var(--cream); font-weight: 700; }
-  button.play { background: transparent; color: var(--cream); box-shadow: inset 0 0 0 2px var(--cream); }
-  button.play:hover { background: var(--cream); color: var(--black); }
-  button.play[hidden] { display: none; }
-  .icon { width: 12px; height: 12px; }
-
-  /* small visible player; YouTube's terms require the player to stay visible */
-  .yt {
-    margin-top: 20px;
-    width: min(100%, 356px);
-    aspect-ratio: 16 / 9;
-    border-radius: 10px;
-    overflow: hidden;
-    background: #1a1914;
-  }
-  .yt iframe { width: 100%; height: 100%; border: 0; display: block; }
-
-  /* tap-to-enter screen: the tap is what lets the browser play sound */
-  .enter {
-    position: fixed;
-    inset: 0;
-    z-index: 10;
-    background: var(--black);
-    color: var(--cream);
-    border: 0;
-    font: inherit;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 22px;
-    padding: 24px;
-    transition: opacity 0.6s ease;
-  }
-  .enter .stripe { width: 120px; margin: 0; }
-  .enter-title {
-    font-weight: 900;
-    font-stretch: 62%;
-    font-size: clamp(44px, 12vw, 72px);
-    line-height: 0.9;
-    text-transform: lowercase;
-  }
-  .enter-cta { font-stretch: 125%; font-weight: 300; font-size: 18px; color: var(--sky); }
-  body.entered .enter { opacity: 0; pointer-events: none; }
-  body:not(.entered) .photo { animation-play-state: paused; }
 
   @media (prefers-reduced-motion: reduce) {
-    .enter { transition: none; }
     .photo { animation: none; opacity: 1; }
   }
 </style>
 </head>
 <body>
-<button class="enter" id="enter" type="button">
-  <span class="enter-title">House set behind the camper</span>
-  <span class="stripe" aria-hidden="true"></span>
-  <span class="enter-cta">Tap to enter</span>
-</button>
 <main>
   <img class="photo" src="camper.jpg" width="825" height="1018"
        alt="An old cream camper van with a brown stripe parked beside a cinder-block garage on a foggy morning">
@@ -205,73 +154,8 @@
 
   <div class="track">
     <p>Soundtrack: <strong>Pull Up</strong> by Funk Cartel</p>
-    <button class="play" id="play" hidden>
-      <svg class="icon" viewBox="0 0 12 12" aria-hidden="true"><path id="icon" d="M2 1l9 5-9 5z" fill="currentColor"/></svg>
-      <span id="label">Play</span>
-    </button>
   </div>
-  <div class="yt"><div id="yt-player"></div></div>
 </main>
 
-<script>
-  // ▼ Paste the YouTube link for the song between the quotes
-  const YOUTUBE_LINK = 'https://www.youtube.com/watch?v=J_eDFO5OGW8';
-
-  // Pulls the video ID out of any normal YouTube link (watch?v=, youtu.be/, shorts/, music.youtube)
-  function getId(link) {
-    const m = link.match(/(?:v=|youtu\.be\/|shorts\/|embed\/)([\w-]{11})/);
-    return m ? m[1] : link.trim();
-  }
-  const VIDEO_ID = getId(YOUTUBE_LINK);
-
-  const btn = document.getElementById('play');
-  const label = document.getElementById('label');
-  const icon = document.getElementById('icon');
-  const PLAY = 'M2 1l9 5-9 5z';
-  const PAUSE = 'M2 1h3v10H2zM7 1h3v10H7z';
-  let player, isPlaying = false;
-
-  const tag = document.createElement('script');
-  tag.src = 'https://www.youtube.com/iframe_api';
-  document.head.appendChild(tag);
-
-  window.onYouTubeIframeAPIReady = function () {
-    player = new YT.Player('yt-player', {
-      videoId: VIDEO_ID,
-      playerVars: { autoplay: 1, mute: 1, loop: 1, playlist: VIDEO_ID, playsinline: 1, rel: 0 },
-      events: {
-        onReady: (e) => {
-          btn.hidden = false;
-          e.target.playVideo(); // starts muted behind the enter screen
-          if (entered) startSound();
-        },
-        onStateChange: (e) => {
-          isPlaying = e.data === YT.PlayerState.PLAYING;
-          label.textContent = isPlaying ? 'Pause' : 'Play';
-          icon.setAttribute('d', isPlaying ? PAUSE : PLAY);
-        }
-      }
-    });
-  };
-
-  // The visitor's tap on "Tap to enter" is what unlocks sound in the browser
-  let entered = false;
-  function startSound() {
-    if (!player || !player.unMute) return;
-    player.unMute();
-    player.setVolume(100);
-    player.playVideo();
-  }
-  document.getElementById('enter').addEventListener('click', () => {
-    entered = true;
-    document.body.classList.add('entered');
-    startSound();
-  });
-
-  btn.addEventListener('click', () => {
-    if (!player) return;
-    if (isPlaying) { player.pauseVideo(); } else { player.unMute(); player.playVideo(); }
-  });
-</script>
 </body>
 </html>
